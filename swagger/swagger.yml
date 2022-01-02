@@ -1,0 +1,161 @@
+---
+swagger: "2.0"
+info:
+  description: The cat REST API
+  title: Cat API
+  version: 1.0.0
+schemes:
+  - http
+paths:
+  /:
+    get:
+      tags: [ "cats" ]
+      produces:
+        - application/json
+      description: Get all the cats with pagination
+      parameters:
+        - name: since
+          description: Offset to start from
+          in: query
+          type: integer
+          format: int64
+        - name: limit
+          description: Maximum results number
+          in: query
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        200:
+          description: List of cats
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/cat"
+        500:
+          description: internal error
+          schema:
+            $ref: "#/definitions/error"
+    post:
+      tags: [ "cats" ]
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Create a new cat
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/cat"
+      responses:
+        201:
+          description: Cat created
+          schema:
+            $ref: "#/definitions/cat"
+        400:
+          description: bad request
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: internal error
+          schema:
+            $ref: "#/definitions/error"
+  /{id}:
+    parameters:
+      - type: integer
+        format: int64
+        name: id
+        in: path
+        required: true
+    get:
+      tags: [ "cats" ]
+      produces:
+        - application/json
+      description: Get a cat by id
+      responses:
+        200:
+          description: Cat found
+          schema:
+            $ref: "#/definitions/cat"
+        404:
+          description: not found
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: internal error
+          schema:
+            $ref: "#/definitions/error"
+    put:
+      tags: [ "cats" ]
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      description: Modify a cat by id
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: "#/definitions/cat"
+      responses:
+        200:
+          description: Cat modified
+          schema:
+            $ref: "#/definitions/cat"
+        400:
+          description: bad request
+          schema:
+            $ref: "#/definitions/error"
+        404:
+          description: not found
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: internal error
+          schema:
+            $ref: "#/definitions/error"
+    delete:
+      tags: [ "cats" ]
+      produces:
+        - application/json
+      description: Delete a cat by id
+      responses:
+        204:
+          description: Cat deleted
+        404:
+          description: not found
+          schema:
+            $ref: "#/definitions/error"
+        500:
+          description: internal error
+          schema:
+            $ref: "#/definitions/error"
+definitions:
+  cat:
+    type: object
+    required:
+      - name
+      - color
+    properties:
+      id:
+        type: integer
+        format: int64
+        readOnly: true
+      created_at:
+        type: string
+        format: dateTime
+        readOnly: true
+      age:
+        type: integer
+        format: int32
+      name:
+        type: string
+        minLength: 2
+      feral:
+        type: boolean
+      color:
+        type: string
+        enum: ["black", "white", "ginger", "stripped"]
+  error:
+    type: string
