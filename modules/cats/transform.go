@@ -9,16 +9,7 @@ import (
 func catsTransform(value []*ent.Cat) (cats []*models.Cat) {
 	cats = make([]*models.Cat, len(value))
 	for index, elem := range value {
-		color := elem.Color.String()
-		name := elem.Name
-		cats[index] = &models.Cat{
-			Age:       int32(elem.Age),
-			Color:     &color,
-			CreatedAt: elem.CreatedAt.Format(time.RFC3339),
-			Feral:     elem.Feral,
-			ID:        int64(elem.ID),
-			Name:      &name,
-		}
+		cats[index] = catTransform(elem)
 	}
 	return
 }
